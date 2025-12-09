@@ -1,0 +1,91 @@
+{
+  "name": "imouto-run",
+  "displayName": "Imouto Run",
+  "publisher": "nagiharu",
+  "version": "0.1.0",
+  "engines": {
+    "vscode": "^1.50.0"
+  },
+  "activationEvents": [
+    "onLanguage:python",
+    "onLanguage:c",
+    "onLanguage:shellscript",
+    "onStartupFinished"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "extension.imoutoRun",
+        "title": "Imouto: Run current file",
+        "category": "Imouto"
+      }
+      ,
+      {
+        "command": "extension.imoutoRunCli",
+        "title": "Imouto: Run (language shortcut)",
+        "category": "Imouto"
+      }
+    ],
+    "configuration": {
+      "type": "object",
+      "title": "Imouto Run",
+      "properties": {
+        "imoutoRun.autoRunOnStartup": {
+          "type": "boolean",
+          "default": true,
+          "description": "拡張機能有効化時にアクティブな Python/C ファイルを自動で実行（チェック）します。"
+        },
+        "imoutoRun.autoRunOnOpen": {
+          "type": "boolean",
+          "default": false,
+          "description": "ファイルを開いたときに自動で実行（チェック）します。"
+        },
+        "imoutoRun.autoRunOnSave": {
+          "type": "boolean",
+          "default": false,
+          "description": "ファイルを保存したときに自動で実行（チェック）します。"
+        },
+        "imoutoRun.verbosity": {
+          "type": "string",
+          "enum": [
+            "simple",
+            "normal",
+            "verbose"
+          ],
+          "default": "simple",
+          "description": "出力の詳細度: simple（妹の一言のみ）, normal（エラーと妹の一言）, verbose（すべて表示）"
+        },
+        "imoutoRun.languageCommands": {
+          "type": "object",
+          "default": {
+            "py": "python \"{path}\"",
+            "c": "gcc -fsyntax-only \"{path}\"",
+            "cpp": "g++ -fsyntax-only \"{path}\"",
+            "js": "node \"{path}\"",
+            "ts": "tsc --noEmit \"{path}\"",
+            "java": "javac \"{path}\"",
+            "go": "go vet \"{path}\"",
+            "php": "php -l \"{path}\"",
+            "ruby": "ruby -c \"{path}\"",
+            "sh": "bash -n \"{path}\""
+          },
+          "description": "言語ショートカット -> 実行コマンド のマッピング（{path} はファイルパスに置換される）。カスタムルールを追加可能。"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -w -p ./"
+  },
+  "devDependencies": {
+    "@types/node": "^24.10.2",
+    "typescript": "^4.0.0",
+    "vsce": "^2.15.0",
+    "vscode": "^1.1.37"
+  }
+    ,
+    "license": "CC-BY-NC-4.0"
+}

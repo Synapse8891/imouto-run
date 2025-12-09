@@ -1,0 +1,67 @@
+name: Release to GitHub Releases
+
+on:
+  push:
+    tags:
+      - 'v*'  # v0.1.0 のようなタグで自動実行
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Compile TypeScript
+        run: npm run compile
+
+      - name: Package extension (vsce)
+        run: npx vsce package
+
+      - name: Get version from tag
+        id: version
+        run: echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
+
+      - name: Create Release with VSIX
+        uses: softprops/action-gh-release@v1
+        with:
+          files: imouto-run-*.vsix
+          draft: false
+          prerelease: false
+          name: Release ${{ steps.version.outputs.VERSION }}
+          body: |
+            ## Imouto Run ${{ steps.version.outputs.VERSION }}
+
+            妹がプログラムのエラーを面白く翻訳する VS Code 拡張機能
+
+            ### インストール方法
+
+            1. ファイル: `imouto-run-*.vsix` をダウンロード
+            2. VS Code で以下を実行:
+               ```bash
+               code --install-extension imouto-run-*.vsix
+               ```
+
+            ### 対応言語
+            - Python (py)
+            - C (c)
+            - C++ (cpp)
+            - JavaScript (js)
+            - TypeScript (ts)
+            - Java (java)
+            - Go (go)
+            - PHP (php)
+            - Ruby (ruby)
+            - Shell/Bash (sh)
+
+            ### ライセンス
+            CC-BY-NC-4.0 （著作者クレジット表示で非商用利用は自由）
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
