@@ -15,15 +15,16 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: '18'
+          cache: 'npm'
 
       - name: Install dependencies
-        run: npm install
+        run: npm install --legacy-peer-deps
 
       - name: Compile TypeScript
         run: npm run compile
 
       - name: Package extension (vsce)
-        run: npx vsce package
+        run: npx vsce package --allow-missing-repository
 
       - name: Get version from tag
         id: version
