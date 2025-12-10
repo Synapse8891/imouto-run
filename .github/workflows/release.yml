@@ -14,16 +14,19 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '18'
+          node-version: '20'
 
-      - name: Clean install dependencies
-        run: rm -rf node_modules package-lock.json && npm install
+      - name: Install dependencies
+        run: npm install
 
       - name: Compile TypeScript
         run: npm run compile
 
+      - name: Install vsce globally
+        run: npm install -g @vscode/vsce
+
       - name: Package extension (vsce)
-        run: npx vsce package --allow-missing-repository
+        run: vsce package --allow-missing-repository
 
       - name: Get version from tag
         id: version
